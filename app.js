@@ -10,10 +10,11 @@ const catalogRouter = require('./routes/catalog');
 
 const app = express();
 
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
-const mongoDB =
-  'mongodb+srv://gyoun:mongo00@cluster0.pgpyyol.mongodb.net/local_library?retryWrites=true&w=majority';
+const mongoDB = process.env.MONGODB;
 
 main().catch((err) => {
   console.log(err);
