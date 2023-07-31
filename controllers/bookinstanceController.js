@@ -114,6 +114,12 @@ exports.bookinstance_update_get = asyncHandler(async (req, res, next) => {
     Book.find().exec(),
   ]);
 
+  if (bookInstance === null) {
+    const err = new Error('Book instance not found');
+    err.status = 404;
+    return next(err);
+  }
+
   res.render('bookinstance_form', {
     title: 'Update Book Instance',
     bookinstance: bookInstance,
