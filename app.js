@@ -8,7 +8,17 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const catalogRouter = require('./routes/catalog');
 
+const compression = require('compression');
+const helmet = require('helmet');
+
 const app = express();
+
+const RateLimit = require('express-rate-limit');
+const limiter = RateLimit({
+  windowsMs: 1 * 60 * 1000,
+  max: 20,
+});
+app.use(limiter);
 
 require('dotenv').config();
 
@@ -21,11 +31,21 @@ main().catch((err) => {
 });
 async function main() {
   await mongoose.connect(mongoDB);
-};
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
+    },
+  })
+);
+
+app.use(compression());
 
 app.use(logger('dev'));
 app.use(express.json());
